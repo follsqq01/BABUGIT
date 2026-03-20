@@ -72,6 +72,7 @@ h3 {
   align-items: center;
   width: 100%;
   height: auto;
+  border: ;
 }
 .creators {
   height: 80vh !important;
@@ -785,7 +786,7 @@ h3 {
   left: 0;
   width: 100%;
   height: 100%;
-  z-index: 5;
+  z-index: ;
 }
 /* Убираем черную рамку у физики */
 #physics-container canvas {
@@ -797,6 +798,7 @@ h3 {
   background-color: #3c2a28;
   background-image: url("img/brown_back.png");
   background-size: cover;
+  border-radius: 5vw 5vw 0% 0%;
   color: var(--blue);
 }
 
