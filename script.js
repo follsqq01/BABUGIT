@@ -104,16 +104,16 @@ function initPhysics() {
     Matter;
 
   engine = Engine.create();
+  const world = engine.world; // Определяем world сразу
   const container = document.getElementById("physics-container");
 
-  // Определяем базовый радиус (размер) в зависимости от экрана
-  const currentRadius =
-    window.innerWidth > 768 ? BALL_SETTINGS.radius : BALL_SETTINGS.mobileRadius;
-
-  const currentImageScale =
-    window.innerWidth > 768
-      ? BALL_SETTINGS.imageScale
-      : BALL_SETTINGS.mobileImageScale;
+  const isMobile = window.innerWidth <= 768;
+  const currentRadius = isMobile
+    ? BALL_SETTINGS.mobileRadius
+    : BALL_SETTINGS.radius;
+  const currentImageScale = isMobile
+    ? BALL_SETTINGS.mobileImageScale
+    : BALL_SETTINGS.imageScale;
 
   render = Render.create({
     element: container,
@@ -149,7 +149,34 @@ function initPhysics() {
     { isStatic: true }
   );
 
-  // --- СОЗДАНИЕ ШАРОВ (КАК БЫЛО) ---
+  // --- 1. СОЗДАНИЕ SVG ФИГУР (ДЕКОР — пойдет на задний план) ---
+  const svgFiles = [
+    "img/Group 39746-1.svg",
+    "img/Group 39735.svg",
+    "img/Group 39746.svg",
+  ];
+  const svgBodies = svgFiles.map((src, i) => {
+    const size = currentRadius * 2;
+    return Bodies.rectangle(
+      render.options.width / 2 + (i * 80 - 40),
+      -300 - i * 150,
+      size,
+      size,
+      {
+        label: "decorShape",
+        restitution: 0.5,
+        render: {
+          sprite: {
+            texture: src,
+            xScale: currentImageScale * 4,
+            yScale: currentImageScale * 4,
+          },
+        },
+      }
+    );
+  });
+
+  // --- 2. СОЗДАНИЕ ШАРОВ С ФОТО (ПЕРЕДНИЙ ПЛАН) ---
   const images = ["img/Rus.png", "img/Liza.png", "img/Amina.png"];
   const balls = images.map((src, i) => {
     return Bodies.circle(
@@ -157,6 +184,7 @@ function initPhysics() {
       -100 - i * 150,
       currentRadius,
       {
+        label: "photoCircle", // Метка для сортировки
         restitution: BALL_SETTINGS.restitution,
         friction: BALL_SETTINGS.friction,
         render: {
@@ -170,38 +198,6 @@ function initPhysics() {
     );
   });
 
-  // --- СОЗДАНИЕ SVG ФИГУР ---
-  const svgFiles = [
-    "img/Group 39746-1.svg",
-    "img/Group 39735.svg",
-    "img/Group 39746.svg",
-  ];
-
-  const svgBodies = svgFiles.map((src, i) => {
-    // Размер фигуры делаем сопоставимым с диаметром шара (радиус * 2)
-    const size = currentRadius * 2;
-
-    return Bodies.rectangle(
-      render.options.width / 2 + (i * 80 - 40), // Немного смещаем по X
-      -300 - i * 150, // Падают чуть выше/позже шаров
-      size,
-      size,
-      {
-        restitution: 0.5, // Угловатые фигуры обычно прыгают чуть меньше
-        friction: 0.1,
-        render: {
-          sprite: {
-            texture: src,
-            // Тебе может понадобиться подогнать этот масштаб в зависимости
-            // от внутренних размеров (viewBox) самих SVG файлов
-            xScale: currentImageScale * 4,
-            yScale: currentImageScale * 4,
-          },
-        },
-      }
-    );
-  });
-
   // --- НАСТРОЙКА МЫШИ ---
   const mouse = Mouse.create(render.canvas);
   const mouseConstraint = MouseConstraint.create(engine, {
@@ -209,18 +205,28 @@ function initPhysics() {
     constraint: { stiffness: 0.2, render: { visible: false } },
   });
 
+  // Чтобы не мешало скроллу
   mouse.element.removeEventListener("mousewheel", mouse.mousewheel);
   mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
 
-  // --- ДОБАВЛЯЕМ ВСЁ В МИР ---
-  Composite.add(engine.world, [
+  // --- ДОБАВЛЯЕМ В МИР ---
+  // Добавляем сначала стены, потом декор, потом фото.
+  // В Matter.js те, кто добавлен позже, рисуются выше.
+  Composite.add(world, [
     floor,
     wallLeft,
     wallRight,
+    ...svgBodies,
     ...balls,
-    ...svgBodies, // <--- Добавили массив с фигурами
     mouseConstraint,
   ]);
+
+  // Финальный штрих: принудительная сортировка тел по их меткам (labels)
+  world.bodies.sort((a, b) => {
+    if (a.label === "photoCircle") return 1;
+    if (b.label === "photoCircle") return -1;
+    return 0;
+  });
 
   Render.run(render);
   runner = Runner.create();
