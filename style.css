@@ -82,10 +82,11 @@ h3 {
   position: relative;
   width: 100%;
   height: auto;
+
   display: flex;
   justify-content: center;
   background-color: var(--white) !important;
-  z-index: -20;
+  z-index: 1;
 }
 
 .main-wrapper {
@@ -319,6 +320,7 @@ h3 {
   background-color: var(--blue);
   overflow: hidden;
   border-radius: 5vw 5vw 0% 0%; /* Скругляем только верхние углы */
+  z-index: 10;
 }
 
 .about-title {
@@ -421,6 +423,7 @@ h3 {
   background-size: cover;
   color: var(--blue);
   overflow: hidden;
+  z-index: 1;
 }
 
 .voices__inner {
@@ -535,6 +538,7 @@ h3 {
 .shop {
   background-color: var(--blue);
   border-radius: 5vw 5vw 0% 0%;
+  z-index: 10;
 }
 
 .title-row {
