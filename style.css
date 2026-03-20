@@ -1082,7 +1082,7 @@ h3 {
     width: 25vw;
   }
   .creators {
-    height: 95vh !important;
+    height: 90vh !important;
   }
   .creators__title {
     font-size: var(--mobile-title-size) !important;
