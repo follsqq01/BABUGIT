@@ -941,7 +941,7 @@ p {
 
 .faq-item {
   border: 0.1vw solid var(--blue);
-  border-radius: var(--radius-main);
+  border-radius: 1.5vw;
   margin-bottom: 1.5vh;
   overflow: hidden;
   height: fit-content;
@@ -1393,6 +1393,7 @@ p {
   justify-content: space-between;
   align-items: flex-start; /* Выравнивание по нижнему краю */
   width: 100%;
+  gap: 3vw;
   padding-top: 5vw;
   position: relative;
   height: 20vh;
