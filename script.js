@@ -132,21 +132,32 @@ function initPhysics() {
     render.options.height + 25,
     render.options.width,
     50,
-    { isStatic: true }
+    {
+      isStatic: true,
+      render: { visible: false }, // Скрывает визуальное отображение пола
+    }
   );
+
   const wallLeft = Bodies.rectangle(
     -25,
     render.options.height / 2,
     50,
     render.options.height,
-    { isStatic: true }
+    {
+      isStatic: true,
+      render: { visible: false }, // Скрывает левую стену
+    }
   );
+
   const wallRight = Bodies.rectangle(
     render.options.width + 25,
     render.options.height / 2,
     50,
     render.options.height,
-    { isStatic: true }
+    {
+      isStatic: true,
+      render: { visible: false }, // Скрывает правую стену
+    }
   );
 
   // --- 1. СОЗДАНИЕ SVG ФИГУР (ДЕКОР — пойдет на задний план) ---
@@ -210,8 +221,7 @@ function initPhysics() {
   mouse.element.removeEventListener("DOMMouseScroll", mouse.mousewheel);
 
   // --- ДОБАВЛЯЕМ В МИР ---
-  // Добавляем сначала стены, потом декор, потом фото.
-  // В Matter.js те, кто добавлен позже, рисуются выше.
+  // Сначала добавляем всё в массив, порядок пока не важен
   Composite.add(world, [
     floor,
     wallLeft,
@@ -220,6 +230,26 @@ function initPhysics() {
     ...balls,
     mouseConstraint,
   ]);
+
+  // --- ЛОГИКА Z-INDEX (Сортировка) ---
+  const isMobileNow = window.innerWidth <= 768;
+
+  world.bodies.sort((a, b) => {
+    // Стены всегда в самом низу (чтобы не перекрывали декор/фото)
+    if (a.isStatic) return -1;
+    if (b.isStatic) return 1;
+
+    if (isMobileNow) {
+      // НА МОБИЛКЕ: Фото (photoCircle) ПОД декором (decorShape)
+      if (a.label === "photoCircle" && b.label === "decorShape") return -1;
+      if (a.label === "decorShape" && b.label === "photoCircle") return 1;
+    } else {
+      // НА НОУТБУКЕ: Фото (photoCircle) ПОВЕРХ декора (decorShape)
+      if (a.label === "photoCircle" && b.label === "decorShape") return 1;
+      if (a.label === "decorShape" && b.label === "photoCircle") return -1;
+    }
+    return 0;
+  });
 
   // Финальный штрих: принудительная сортировка тел по их меткам (labels)
   world.bodies.sort((a, b) => {
@@ -320,3 +350,16 @@ ScrollTrigger.create({
   pinSpacing: false, // ВАЖНО: убираем отступ внизу, что позволяет следующему блоку наехать сверху
 });
 // Фиксируем первый экран, чтобы второй наезжал на него
+document.querySelectorAll('a[href^="#"]').forEach((link) => {
+  link.addEventListener("click", function (e) {
+    e.preventDefault();
+
+    const target = this.getAttribute("href");
+
+    gsap.to(window, {
+      duration: 1,
+      scrollTo: target,
+      ease: "power2.out",
+    });
+  });
+});

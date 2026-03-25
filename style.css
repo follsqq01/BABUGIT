@@ -10,14 +10,27 @@
   --section-pad-y: 10vh;
   --section-pad-x: 5vw;
 }
-
+@font-face {
+  font-family: "Pioner Sans";
+  src: url("PionerSans-Regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
 @media (max-width: 768px) {
   :root {
     --radius-main: 4vw; /* На мобилках скругления чуть больше для пропорции */
     --section-pad-y: 8vh;
   }
 }
-
+.mark {
+  display: inline;
+  background: #f14c2d;
+  color: #fffaf5;
+  padding: 0.08em 0.2em;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
+  line-height: 1.2;
+}
 @font-face {
   font-family: "Helvetica Neue Custom";
   src: url("HelveticaNeue-Roman.otf") format("opentype");
@@ -57,6 +70,8 @@ h1,
 h2,
 h3 {
   font-weight: 500 !important;
+  font-family: "Pioner Sans", var(--font) !important;
+  letter-spacing: 2px;
 }
 
 /* === БАЗОВЫЕ ОТСТУПЫ ДЛЯ ВСЕХ СЕКЦИЙ === */
@@ -74,6 +89,7 @@ h3 {
   height: auto;
   border-radius: 5vw 5vw 0 0;
 }
+
 .faq-section {
   height: auto;
 }
@@ -84,11 +100,10 @@ h3 {
 .hero {
   position: relative;
   width: 100%;
-  height: auto;
-  overflow-x: hidden;
-
+  height: 96vh;
   display: flex;
   justify-content: center;
+  align-items: center; /* Центрируем контент по вертикали */
   background-color: var(--white) !important;
   z-index: 1;
 }
@@ -112,6 +127,7 @@ h3 {
   justify-content: center;
   align-items: center;
   z-index: 2000;
+  font-family: "Pioner Sans";
   /* Легкая тень, чтобы отделить от контента при скролле */
 }
 .stickers {
@@ -121,10 +137,22 @@ h3 {
   top: 70%;
 }
 .stickers2 {
-  position: absolute;
+  margin: 0vh 0 3vh 0;
+  display: flex;
+  justify-content: center;
+}
+.hero-image {
+  margin: 0vh 0 3vh 0;
+  display: flex;
+  justify-content: center;
+}
+.hero-image img {
+  width: 16vw; /* Задаем размер цветку, чтобы он не был огромным */
   height: auto;
-  left: 87%;
-  top: 40%;
+}
+.stickers2 img {
+  width: 16vw; /* Задаем размер цветку, чтобы он не был огромным */
+  height: auto;
 }
 .nav-wrapper {
   margin-top: 0.5vh;
@@ -242,10 +270,12 @@ h3 {
 
 /* КОНТЕНТ HERO */
 .content {
-  margin-top: 8vh;
   text-align: center;
   width: 100%;
   color: var(--blue) !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 .about-bg {
   margin-top: -25%;
@@ -268,27 +298,50 @@ h3 {
 .btn-group {
   display: flex;
   justify-content: center;
-  gap: 2vw;
-  margin-bottom: 8vh;
+  gap: 1vw; /* Уменьшаем расстояние между кнопками */
+}
+/* По умолчанию на мобилках оставляем как есть или явно задаем низкий слой */
+#physics-container {
+  position: absolute;
+  z-index: 1; /* Под текстом */
+  pointer-events: none; /* Чтобы можно было выделять текст под шарами */
 }
 
+/* На ноутбуках и ПК поднимаем над всем контентом */
+@media (min-width: 769px) {
+  #physics-container {
+    z-index: 9999; /* Поверх всего */
+    pointer-events: none; /* Важно: чтобы клики проходили сквозь контейнер на кнопки сайта */
+  }
+
+  /* Но разрешаем взаимодействие с шарами (мышкой) */
+  #physics-container canvas {
+    pointer-events: auto;
+  }
+}
 .btn {
-  padding: 1.5vh 3vw;
-  padding-top: 2vh !important;
-  border-radius: var(--radius-main);
+  padding: 2.3vh;
+  padding-bottom: 2vh;
+  border-radius: 0.8vw; /* Скругление как на скрине */
   text-decoration: none;
   font-size: 1.1vw;
   font-weight: 500;
+  text-transform: uppercase;
+  transition: all 0.3s ease;
+  width: 17vw; /* Задаем четкую одинаковую ширину */
+  text-align: center;
 }
 
 .btn-fill {
   background: var(--blue) !important;
   color: var(--white) !important;
+  border: 0.1vw solid var(--blue); /* Бордер для одинакового размера с соседней кнопкой */
 }
 
 .btn-border {
   border: 0.1vw solid var(--blue);
   color: var(--blue);
+  background: transparent;
 }
 
 .mockup {
@@ -346,7 +399,7 @@ h3 {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2vw;
-  width: 100%;
+  width: 80%;
 }
 
 .card-wrapper {
@@ -388,8 +441,29 @@ h3 {
   z-index: 2;
   color: var(--bg);
 }
-
+.back-ill {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%); /* Магия центрирования */
+  width: 40%;
+}
+.back-ill_3 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%); /* Магия центрирования */
+  width: 55%;
+}
+.back-ill_1 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%); /* Магия центрирования */
+  width: 55%;
+}
 .card-back {
+  position: relative;
   transform: rotateY(180deg);
   color: #59403e;
   justify-content: flex-start;
@@ -428,12 +502,19 @@ h3 {
 
 /* === VOICES СЕКЦИЯ === */
 .voices {
-  /* background-color: #3c2a28; */
-  /* background-image: url("img/brown_back.png"); */
-  background-size: cover;
+  background-color: #3c2a28;
   color: var(--blue);
-  overflow: hidden;
-  z-index: 1;
+  border-radius: 0 0 5vw 5vw !important; /* Скругляем только НИЗ */
+  padding-bottom: 8vh; /* Добавляем отступ снизу, чтобы контент не обрезался */
+  position: relative;
+  z-index: 1; /* Она должна быть ниже следующей секции */
+  padding-bottom: 20vh;
+}
+
+.voices-bg-provider {
+  background-color: #3c2a28; /* Тот же коричневый, что у секции */
+  width: 100%;
+  overflow: hidden; /* Чтобы скругление внутренней секции работало корректно */
 }
 
 .voices__inner {
@@ -464,10 +545,24 @@ h3 {
 
 .gallery__track {
   display: flex;
-  width: max-content;
-  animation: galleryScroll 25s linear infinite;
+  width: max-content; /* Позволяет контейнеру растягиваться во всю длину */
+  animation: galleryScroll 40s linear infinite; /* Увеличьте время для плавности */
+  will-change: transform; /* Подсказка браузеру для плавной работы */
 }
-
+@keyframes galleryScroll {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    /* Сдвигаем ровно на половину всей ширины (конец первого блока) */
+    transform: translateX(-50%);
+  }
+}
+@media (max-width: 768px) {
+  .gallery__track {
+    animation-duration: 30s;
+  }
+}
 .gallery:hover .gallery__track {
   animation-play-state: paused;
 }
@@ -495,16 +590,15 @@ h3 {
   height: 15vw;
   border-radius: 50%; /* Кружки оставляем круглыми */
   overflow: hidden;
-  background: #5a4a3a;
+  background: #b4c1c7;
   margin-bottom: 2vh;
   flex-shrink: 0;
   /* box-shadow: 0 0.5vh 1vw rgba(0, 0, 0, 0.2); */
 }
-
 .gallery__circle img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+  width: 100%; /* Картинка растянется на всю ширину круга */
+  height: 100%; /* Картинка растянется на всю высоту круга */
+  object-fit: cover; /* Заполнит круг полностью без искажений */
   display: block;
 }
 
@@ -549,6 +643,8 @@ h3 {
   background-color: var(--blue);
   border-radius: 5vw 5vw 0% 0%;
   z-index: 10;
+  margin-top: -5vw;
+  z-index: 2 !important;
 }
 
 .title-row {
@@ -586,7 +682,7 @@ h3 {
 
 .shop-title5,
 .creators__title {
-  font-size: 6vw !important;
+  font-size: 4vw !important;
   color: var(--blue);
   margin-bottom: 6vh;
 }
@@ -698,12 +794,20 @@ h3 {
 
 .card-img-box {
   width: 100%;
-  aspect-ratio: 1 / 0.9;
+  aspect-ratio: 1 / 0.9; /* Пропорция как на макете */
   background-color: var(--white);
-  border-radius: calc(var(--radius-main) * 0.7);
+  border-radius: 1vw; /* Скругление углов рамки */
   margin-bottom: 2vh;
+  overflow: hidden; /* Обрезаем картинку по скруглению рамки */
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-
+.card-img-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain; /* Картинка впишется целиком без обрезки. Если хотите на весь бокс — ставьте 'cover' */
+}
 .card-name {
   font-size: 2.2vw;
   line-height: 1;
@@ -711,7 +815,6 @@ h3 {
   margin-bottom: 1vh;
   text-transform: uppercase;
 }
-
 .card-author {
   font-size: 1vw;
   color: var(--white);
@@ -788,7 +891,7 @@ h3 {
 
 .creators__text {
   flex: 1;
-  font-size: 1.2vw;
+  font-size: 1.5vw;
   line-height: 1.4;
   color: var(--blue);
   opacity: 0.9;
@@ -800,6 +903,9 @@ h3 {
   left: 0;
   width: 100%;
   height: 100%;
+}
+p {
+  line-height: 1.3 !important;
 }
 /* Убираем черную рамку у физики */
 #physics-container canvas {
@@ -813,6 +919,7 @@ h3 {
   background-size: cover;
   border-radius: 5vw 5vw 0% 0%;
   color: var(--blue);
+  padding-bottom: 0vh !important;
 }
 
 .faq-title {
@@ -874,7 +981,15 @@ h3 {
   line-height: 1.5;
   opacity: 0.8;
 }
-
+.footer-divider {
+  width: 100%;
+  margin: 0 auto; /* Центрируем */
+  border-top: 1px solid var(--blue); /* Используем ваш цвет из темы */
+  opacity: 1; /* Делаем её чуть мягче */
+  position: relative;
+  z-index: 10;
+  padding-bottom: 3vh;
+}
 /* === АДАПТИВ ДЛЯ МОБИЛОК === */
 @media (max-width: 768px) {
   :root {
@@ -947,15 +1062,20 @@ h3 {
   .title {
     font-size: var(--mobile-title-size) !important;
   }
+  .voices {
+    padding-bottom: 16vh;
+  }
 
   .subtitle {
     font-size: 3.5vw;
     width: 80vw;
+    line-height: 1.4;
   }
 
   .btn {
     font-size: 3.5vw;
     padding: 2vh 6vw;
+    border-radius: 2.5vw;
     padding-top: 2.5vh !important;
   }
 
@@ -970,7 +1090,7 @@ h3 {
     gap: 4vw;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    width: 100%;
+    width: 80%;
     margin-right: 0;
     scrollbar-width: none;
   }
@@ -990,7 +1110,7 @@ h3 {
 
   .card {
     width: 100%;
-    height: auto;
+    height: auto !important;
     aspect-ratio: 5 / 7;
     transform: rotate(0deg) !important;
   }
@@ -999,7 +1119,7 @@ h3 {
     font-size: 6vw;
   }
   .card-text {
-    font-size: 4.5vw;
+    font-size: 3.5vw;
   }
   .card-number {
     font-size: 4vw;
@@ -1008,7 +1128,7 @@ h3 {
     font-size: var(--mobile-title-size) !important;
   }
   .card-overlay {
-    background-color: var(--blue);
+    background-color: var(--b);
   }
   .voices__title {
     font-size: var(--mobile-title-size) !important;
@@ -1016,6 +1136,7 @@ h3 {
   .voices__subtitle {
     font-size: 3.5vw;
     width: 80vw;
+    line-height: 1.4;
   }
 
   .gallery__item {
@@ -1029,13 +1150,13 @@ h3 {
   }
 
   .gallery__name {
-    font-size: 3vw;
+    font-size: 3.5vw;
   }
   .gallery__role {
-    font-size: 2.5vw;
+    font-size: 3.5vw;
   }
   .gallery__track {
-    animation-duration: 20s;
+    animation-duration: 30s;
   }
 
   .flower--left {
@@ -1083,17 +1204,17 @@ h3 {
     font-size: 8vw;
   }
   .card-author {
-    font-size: 4vw;
+    font-size: 3.5vw;
   }
   .card-meta {
-    font-size: 4.5vw;
+    font-size: 3.5vw;
   }
   .card-desc {
     font-size: 3.5vw;
     padding-bottom: 2vw;
   }
   .shop-btn {
-    font-size: 3vw;
+    font-size: 3.5vw;
   }
   .shop-flower {
     width: 25vw;
@@ -1120,8 +1241,8 @@ h3 {
     font-size: var(--mobile-title-size) !important;
   }
   .faq-header {
-    font-size: 4.5vw;
-    padding: 3vh 4vw;
+    font-size: 3.5vw;
+    padding: 2vh 4vw;
   }
   .faq-content p {
     font-size: 3.5vw;
@@ -1155,7 +1276,6 @@ h3 {
   /* Настройки самой карточки (высота 60% и отключение анимации переворота) */
   .card {
     width: 100% !important;
-    height: 40vh !important;
     aspect-ratio: auto !important;
     transform: none !important; /* Отключаем стартовый наклон */
     background: var(--white) !important;
@@ -1188,6 +1308,7 @@ h3 {
     flex-direction: row !important;
     justify-content: space-between !important;
     align-items: flex-start !important;
+    padding-bottom: 1vh !important;
   }
 
   .card-title {
@@ -1233,4 +1354,161 @@ h3 {
 }
 */ .hero {
   height: 100vh !important;
+}
+
+/* === FOOTER СЕКЦИЯ === */
+/* === FOOTER СЕКЦИЯ === */
+.footer {
+  background-color: #3c2a28; /* Темно-коричневый фон, как в блоке FAQ */
+  padding: 8vh var(--section-pad-x) 0; /* Убираем нижний отступ, чтобы обрезать текст */
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 35vh;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer__socials {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.footer__link {
+  color: var(--blue);
+  text-decoration: none;
+  font-size: 1.5vw;
+  font-weight: 400;
+  text-transform: uppercase;
+  transition: opacity 0.3s ease;
+}
+
+.footer__link:hover {
+  opacity: 0.7;
+}
+
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start; /* Выравнивание по нижнему краю */
+  width: 100%;
+  padding-top: 5vw;
+  position: relative;
+  height: 20vh;
+}
+
+.footer__logo {
+  letter-spacing: 2px;
+  font-size: 14vw; /* Огромный размер шрифта */
+  color: var(--blue);
+  font-family: "Pioner Sans";
+  line-height: 0.72; /* Делаем межстрочный интервал меньше 1, чтобы обрезать нижнюю часть букв */
+  font-weight: 500;
+  text-transform: uppercase;
+  margin-top: 1.6vw;
+  margin-left: -0.5vw; /* Легкий сдвиг влево, чтобы выровнять край букв с текстом выше */
+}
+
+.footer__text {
+  color: var(--blue);
+  font-size: 1vw;
+  line-height: 1.3;
+  text-align: left;
+  opacity: 0.8;
+  padding-bottom: 1vh; /* Немного приподнимаем текст относительно срезанного заголовка */
+}
+
+/* === Адаптив футера для мобилок === */
+@media (max-width: 768px) {
+  .footer {
+    padding-top: 6vh;
+    height: auto !important;
+  }
+
+  .footer__socials {
+    margin-bottom: 5vh;
+  }
+
+  .footer__link {
+    font-size: 3.5vw;
+  }
+
+  .footer__bottom {
+    align-items: flex-start;
+    gap: 3vh;
+    height: auto !important;
+  }
+
+  .footer__logo {
+    font-size: 10vw;
+    line-height: 0.75;
+    margin-left: -1vw;
+  }
+
+  .footer__text {
+    font-size: 3vw;
+    padding-bottom: 2vh;
+  }
+  .back-ill {
+    display: none;
+  }
+  .back-ill_3 {
+    display: none;
+  }
+  .back-ill_1 {
+    display: none;
+  }
+  .card-number {
+    display: none;
+  }
+  .hero-image img {
+    width: 30vw;
+  }
+  .hero {
+    margin-top: -2vh !important;
+  }
+  .btn-group {
+    display: block;
+  }
+}
+
+.back-ill_1dop {
+  position: absolute;
+  display: none;
+}
+.back-illdop {
+  position: absolute;
+  display: none;
+}
+.back-ill_3dop {
+  position: absolute;
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .back-ill_1dop {
+    display: block;
+    left: 4vw;
+    top: 39%;
+    width: 19%;
+    transform: translateY(-50%);
+    z-index: 999;
+  }
+  .back-illdop {
+    right: 80vw;
+    display: block;
+    bottom: 4%;
+    width: 15%;
+    z-index: 999;
+    rotate: calc(-20deg);
+  }
+  .back-ill_3dop {
+    width: 21%;
+    left: 77vw;
+    display: block;
+    bottom: 30%;
+    rotate: calc(-5deg);
+    z-index: 999;
+  }
 }
