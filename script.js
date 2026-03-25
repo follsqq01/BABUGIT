@@ -262,7 +262,41 @@ function initPhysics() {
   runner = Runner.create();
   Runner.run(runner, engine);
 }
+// Обработчик изменения размера окна
+window.addEventListener("resize", () => {
+  if (!hasStarted || !engine || !render) return;
 
+  const container = document.getElementById("physics-container");
+  const width = container.clientWidth;
+  const height = container.clientHeight;
+
+  // 1. Обновляем настройки рендера
+  render.options.width = width;
+  render.options.height = height;
+  render.canvas.width = width;
+  render.canvas.height = height;
+
+  // 2. Находим и перемещаем границы (пол и стены)
+  // Мы ищем их по признаку isStatic, который вы задали при создании
+  const bodies = Matter.Composite.allBodies(engine.world);
+
+  bodies.forEach((body) => {
+    if (body.isStatic) {
+      // Пол (он был в центре по горизонтали и внизу по вертикали)
+      if (body.position.y > height - 50) {
+        Matter.Body.setPosition(body, { x: width / 2, y: height + 25 });
+      }
+      // Левая стена
+      else if (body.position.x < 0) {
+        Matter.Body.setPosition(body, { x: -25, y: height / 2 });
+      }
+      // Правая стена
+      else if (body.position.x > 0) {
+        Matter.Body.setPosition(body, { x: width + 25, y: height / 2 });
+      }
+    }
+  });
+});
 // Запуск при скролле
 ScrollTrigger.create({
   trigger: ".creators",

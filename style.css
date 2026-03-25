@@ -1136,7 +1136,7 @@ p {
   .voices__subtitle {
     font-size: 3.5vw;
     width: 80vw;
-    line-height: 1.4;
+    line-height: 1.4 !important;
   }
 
   .gallery__item {
