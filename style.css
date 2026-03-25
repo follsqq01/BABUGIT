@@ -849,7 +849,7 @@ h3 {
   flex: 1;
   padding: 1.3vh;
   border: none;
-  border-radius: calc(var(--radius-main) * 0.5);
+  border-radius: 0.08vw !important;
   font-size: 0.8vw;
   font-weight: 500;
   cursor: pointer;
