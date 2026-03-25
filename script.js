@@ -397,3 +397,7 @@ document.querySelectorAll('a[href^="#"]').forEach((link) => {
     });
   });
 });
+window.addEventListener("resize", () => {
+  // Заставляем ScrollTrigger пересчитать все позиции
+  ScrollTrigger.refresh();
+});
